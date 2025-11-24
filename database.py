@@ -1,9 +1,10 @@
-import sqlite3
 import aiosqlite
 from datetime import datetime
 
-async def init_db():
-    async with aiosqlite.connect('visits.db') as db:
+DEFAULT_DB = 'visits.db'
+
+async def init_db(db_path=DEFAULT_DB):
+    async with aiosqlite.connect(db_path) as db:
         await db.execute('''
             CREATE TABLE IF NOT EXISTS visits (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -14,16 +15,16 @@ async def init_db():
         ''')
         await db.commit()
 
-async def add_visit(ip: str, user_agent: str = None):
-    async with aiosqlite.connect('visits.db') as db:
+async def add_visit(ip: str, user_agent: str = None, db_path=DEFAULT_DB):
+    async with aiosqlite.connect(db_path) as db:
         await db.execute(
             'INSERT INTO visits (ip, user_agent) VALUES (?, ?)',
             (ip, user_agent)
         )
         await db.commit()
 
-async def get_stats(period: str = 'all'):
-    async with aiosqlite.connect('visits.db') as db:
+async def get_stats(period: str = 'all', db_path=DEFAULT_DB):
+    async with aiosqlite.connect(db_path) as db:
         query = 'SELECT COUNT(*) as total, COUNT(DISTINCT ip) as unique_visits FROM visits'
         
         if period == 'day':
