@@ -1,4 +1,21 @@
-добавь картинку через тег img, вот алрес картинки:
-http://0.0.0.0:8080/counter.png
+1) скопируй файл database.py в свой проект
+2) добавь код ниже на страничку, посещения который ты хочешь считать 
 
-p.s. сайт надо запустить не через localhost
+ip = request.remote
+    user_agent = request.headers.get('User-Agent', 'Unknown')
+    
+    await database.add_visit(ip, user_agent)
+
+3) добавь метод ниже в свой проект
+
+async def handle_counter_png(request):
+    # Получаем количество посещений
+    stats = await database.get_stats('all')
+    count = stats['total']
+
+    # Генерируем картинку (получаем BytesIO)
+    output = make_counter_png(count)
+    return web.Response(body=output.read(), content_type='image/png')
+
+4) Добавь маршрут для выведения картинки, пример:
+app.router.add_get('/PNGName.png', handle_counter_png)

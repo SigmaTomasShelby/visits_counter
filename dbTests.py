@@ -11,11 +11,11 @@ async def test_add_and_get_stats():
 
     os.remove(TEST_DB)
     await init_db(TEST_DB)
-    await add_visit("127.0.0.1", "Test-Agent", db_path=TEST_DB)
-    await add_visit("127.0.0.2", "Test-Agent", db_path=TEST_DB)
-    await add_visit("127.0.0.1", "Another-Agent", db_path=TEST_DB)  # Повторный IP
+    await add_visit("127.0.0.1", "Test-Agent", TEST_DB)
+    await add_visit("127.0.0.2", "Test-Agent", TEST_DB)
+    await add_visit("127.0.0.1", "Another-Agent", TEST_DB)  # Повторный IP
 
-    stats = await get_stats("all", db_path=TEST_DB)
+    stats = await get_stats("all", TEST_DB)
     
     assert stats['total'] == 3
 
